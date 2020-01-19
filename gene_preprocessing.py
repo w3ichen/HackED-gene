@@ -7,7 +7,6 @@ Created on Sat Jan 18 15:41:53 2020
 """
 
 import pandas as pd
-import numpy as np
 
 
 def get_clinical_data(csv_clinical):
@@ -38,11 +37,10 @@ def get_clinical_data(csv_clinical):
         else:
             patient_data[patient_id] = [survival_months, survival_status]
         i += 1
-
     return patient_data, null_patients
 
 
-def get_mrna_expression(csv_expression):
+def get_mrna_expression(gene, csv_expression):
     """Description: returns a dictionary of mRNA expression and quartiles based
     on mRNA expression.
 
@@ -53,18 +51,32 @@ def get_mrna_expression(csv_expression):
     """
     patient_mrna = dict()
 
-    # sort on mrna expression
-
-
+    # getting quartiles for mRNA expression
+    quartile_data = pd.qcut(csv_expression[gene], q = 4, labels = [1, 2, 3, 4])
+    i = 0
+    while i < len(csv_expression):
+        sample_id = csv_expression['SAMPLE_ID'][i]
+        mrna_expression = csv_expression[gene][i]
+        # now insert into dictionary
+        patient_mrna[sample_id] = [mrna_expression, quartile_data[i]]
+        i += 1
     return patient_mrna
 
 
 def merge(main_csv, secondary_csv):
     """Description: merges two pandas data frames based on Sample ID.
+
+    Arguments:
+        main_csv (pandas object): the clinical data.
+        secondary_csv (pandas object): the mRNA expression data.
     """
-    main_list = list(main_csv.keys())
-    for key in main_list:
-        main_csv[key].extend(secondary_csv[key])
+    merged_data = dict()
+
+    for k in main_csv.keys():
+        if k in secondary_csv.keys():
+            merged_data[k] = main_csv[k]
+            merged_data[k] += secondary_csv[k]
+    return merged_data
 
 
 
@@ -77,5 +89,6 @@ if __name__ == '__main__':
 
     # trial script
     patient_data, null_patients = get_clinical_data(CSV_CLINICAL)
-    # get_mrna_expression(CSV_EXPRESSION)
+    patient_mrna = get_mrna_expression('CDK1', CSV_EXPRESSION)
+    merge(patient_data, patient_mrna)
 
