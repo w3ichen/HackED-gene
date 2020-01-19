@@ -15,6 +15,8 @@ iris = datasets.load_iris()
 X = iris.data
 y = iris.target
 
+print(iris.data)
+
 # Binarize the output
 y = label_binarize(y, classes=[0, 1, 2])
 n_classes = y.shape[1]
@@ -44,4 +46,3 @@ for i in range(n_classes):
 # Compute micro-average ROC curve and ROC area
 fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
 roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
-print(fpr)
