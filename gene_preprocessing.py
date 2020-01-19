@@ -53,12 +53,18 @@ def get_mrna_expression(csv_expression):
     """
     patient_mrna = dict()
 
-    i = 0
-    while i < len(csv_expression):
-        pass   
+    # sort on mrna expression
 
 
     return patient_mrna
+
+
+def merge(main_csv, secondary_csv):
+    """Description: merges two pandas data frames based on Sample ID.
+    """
+    main_list = list(main_csv.keys())
+    for key in main_list:
+        main_csv[key].extend(secondary_csv[key])
 
 
 
@@ -67,8 +73,9 @@ if __name__ == '__main__':
     PATH_CLINICAL = 'gene_samples/cdk1_clinical.tsv'
 
     CSV_CLINICAL = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
-    CSV_EXPRESSION = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
+    CSV_EXPRESSION = pd.read_csv(PATH_EXPRESSION, delimiter = '\t')
 
     # trial script
-    patient_data, null_patients = get_clinical_data(CSV_EXPRESSION)
+    patient_data, null_patients = get_clinical_data(CSV_CLINICAL)
+    # get_mrna_expression(CSV_EXPRESSION)
 
