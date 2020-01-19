@@ -1,10 +1,12 @@
-import numpy as np
+# import numpy as np
 import pandas as pd
 import gene_preprocessing as gp
+import sklearn.metrics as metrics
+import numpy as np
 
 
 # perform ROC analysis
-def get_mrna_roc(merged_data):
+def get_mrna_list(merged_data, time_cutoff):
     """Description: given mRNA expression for high expression (quartile 4) and
     low expression (quartile 1), compare the two groups on survival months
     using an ROC curve.
@@ -12,15 +14,16 @@ def get_mrna_roc(merged_data):
     Arguments:
         merged_data (dict): the merged mRNA expression and clinical data.
     Returns:
-        high_expression (dict): key = Sample ID, value = [overall survival,
-            mRNA expression]
-        low_expression (dict): key = Sample ID, value = [overall survival,
-            mRNA expression]
+        high_expression (list): [Sample ID, overall survival months, overall
+            survival status, mRNA expression]
+        low_expression (list): [Sample ID, overall survival, overall survival
+            status, mRNA expression]
+    Notes: 0 means deceased, 1 means alive.
     """
-    high_expression = dict()
-    low_expression = dict()
+    high_expression = list()
+    low_expression = list()
 
-    # if quartile 4, high expression ()
+    # if quartile 4, high expression
     for k, v in merged_data.items():
         # v[1] contains patient survival status
         if v[1] == 'DECEASED':
@@ -28,13 +31,26 @@ def get_mrna_roc(merged_data):
         else:
             survival_status = 1
 
-        # v[3] contains quartile based on mRNA expression
-        if v[3] == 4:
+        if v[0] > time_cutoff:
             # v[0] contains patient survival month
-            high_expression[k] = [v[0], survival_status]
-        elif v[3] == 1:
-            low_expression[k] = [v[0], survival_status]
+            # v[2] contains mRNA expression
+            high_expression.append([k, v[0], survival_status, v[2]])
+        else:
+            low_expression.append([k, v[0], survival_status, v[2]])
     return high_expression, low_expression
+
+
+def get_single_gene_roc(expression_data):
+    """Description: returns the point of maximum sum of true positive and false
+    positive rate.
+
+    Arguments:
+        expression_data (dict): key = sample ID, value = [overall survival, mRNA
+            expression]
+    Returns:
+        insert here
+    """
+    pass
 
 
 if __name__ == '__main__':
@@ -50,4 +66,4 @@ if __name__ == '__main__':
     merged_data = gp.merge(patient_data, patient_mrna)
 
     # roc stuff
-    high_expression, low_expression = get_mrna_roc(merged_data)
+    high_expression, low_expression = get_mrna_list(merged_data, 36)
