@@ -18,7 +18,7 @@ def get_clinical_data(csv_clinical):
     Arguments:
         csv_clinical (pandas object): the data object to read.
     Returns:
-        patient_data (dict): key = 'Sample ID', values = [Overall Survival
+        patient_data (dict): key = Sample ID, values = [Overall Survival
             Status (Months), Overall Survival Status]
         null_patients (set): all the sample IDs which have no data for Overall
             Survival Status (Months) or Overal Survival Statuts.
@@ -42,15 +42,40 @@ def get_clinical_data(csv_clinical):
     return patient_data, null_patients
 
 
+def get_mrna_expression(csv_expression):
+    """Description: returns a dictionary of mRNA expression and quartiles based
+    on mRNA expression.
+
+    Arguments:
+        csv_clinical (pandas object): the data object to read.
+    Returns:
+        patient_mrna (dict): key = Sample ID, values = [expression, quartile]
+    """
+    patient_mrna = dict()
+
+    # sort on mrna expression
+
+
+    return patient_mrna
+
+
+def merge(main_csv, secondary_csv):
+    """Description: merges two pandas data frames based on Sample ID.
+    """
+    main_list = list(main_csv.keys())
+    for key in main_list:
+        main_csv[key].extend(secondary_csv[key])
+
+
 
 if __name__ == '__main__':
     PATH_EXPRESSION = 'gene_samples/cdk1.txt'
     PATH_CLINICAL = 'gene_samples/cdk1_clinical.tsv'
 
     CSV_CLINICAL = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
-    CSV_EXPRESSION = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
+    CSV_EXPRESSION = pd.read_csv(PATH_EXPRESSION, delimiter = '\t')
 
-    patient_data, null_patients = get_clinical_data(CSV_EXPRESSION)
-    print(null_patients)
-    # print(patient_data)
+    # trial script
+    patient_data, null_patients = get_clinical_data(CSV_CLINICAL)
+    # get_mrna_expression(CSV_EXPRESSION)
 
