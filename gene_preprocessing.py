@@ -18,7 +18,7 @@ def get_clinical_data(csv_clinical):
     Arguments:
         csv_clinical (pandas object): the data object to read.
     Returns:
-        patient_data (dict): key = 'Sample ID', values = [Overall Survival
+        patient_data (dict): key = Sample ID, values = [Overall Survival
             Status (Months), Overall Survival Status]
         null_patients (set): all the sample IDs which have no data for Overall
             Survival Status (Months) or Overal Survival Statuts.
@@ -42,6 +42,25 @@ def get_clinical_data(csv_clinical):
     return patient_data, null_patients
 
 
+def get_mrna_expression(csv_expression):
+    """Description: returns a dictionary of mRNA expression and quartiles based
+    on mRNA expression.
+
+    Arguments:
+        csv_clinical (pandas object): the data object to read.
+    Returns:
+        patient_mrna (dict): key = Sample ID, values = [expression, quartile]
+    """
+    patient_mrna = dict()
+
+    i = 0
+    while i < len(csv_expression):
+        pass   
+
+
+    return patient_mrna
+
+
 
 if __name__ == '__main__':
     PATH_EXPRESSION = 'gene_samples/cdk1.txt'
@@ -50,7 +69,6 @@ if __name__ == '__main__':
     CSV_CLINICAL = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
     CSV_EXPRESSION = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
 
+    # trial script
     patient_data, null_patients = get_clinical_data(CSV_EXPRESSION)
-    print(null_patients)
-    # print(patient_data)
 
