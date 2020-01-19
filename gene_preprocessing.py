@@ -7,6 +7,7 @@ Created on Sat Jan 18 15:41:53 2020
 """
 
 import pandas as pd
+import numpy as np
 
 
 def get_clinical_data(csv_clinical):
@@ -17,9 +18,9 @@ def get_clinical_data(csv_clinical):
     Arguments:
         csv_clinical (pandas object): the data object to read.
     Returns:
-        patient_data (dict): key = 'Patient ID', values = [Overall Survival
+        patient_data (dict): key = 'Sample ID', values = [Overall Survival
             Status (Months), Overall Survival Status]
-        null_patients (set): all the patient IDs which have no data for Overall
+        null_patients (set): all the sample IDs which have no data for Overall
             Survival Status (Months) or Overal Survival Statuts.
     """
     patient_data = dict()
@@ -27,15 +28,16 @@ def get_clinical_data(csv_clinical):
 
     i = 0
     while i < len(csv_clinical):
-        patient_id = csv_clinical['Patient ID'][i]
+        patient_id = csv_clinical['Sample ID'][i]
         survival_months = csv_clinical['Overall Survival (Months)'][i]
         survival_status = csv_clinical['Overall Survival Status'][i]
 
         # don't add patient which have NA for any categories
-        if (survival_months == 'NA') or (survival_status == 'NA'):
+        if (pd.isna(survival_months)) or (pd.isna(survival_status)):
             null_patients.add(patient_id)
         else:
             patient_data[patient_id] = [survival_months, survival_status]
+        i += 1
 
     return patient_data, null_patients
 
@@ -48,5 +50,7 @@ if __name__ == '__main__':
     CSV_CLINICAL = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
     CSV_EXPRESSION = pd.read_csv(PATH_CLINICAL, delimiter = '\t')
 
-    get_clinical_data(CSV_EXPRESSION)
+    patient_data, null_patients = get_clinical_data(CSV_EXPRESSION)
+    print(null_patients)
+    # print(patient_data)
 
